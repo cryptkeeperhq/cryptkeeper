@@ -1,0 +1,27 @@
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cryptkeeper-config
+  namespace: cryptkeeper
+data:
+  config.yaml: |
+    server:
+      host: "0.0.0.0"
+      port: 8000
+
+    database:
+      host: "postgres"
+      port: 5432
+      user: "postgres"
+      password: "mysecretpassword"
+      name: "cryptkeeper"
+      sslmode: "disable"
+
+    security:
+      master_key: ""
+
+    sync:
+      platform: "vault"
+      vaulttoken: ""
+      vaultaddress: "http://127.0.0.1:8200"

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-sql
+  namespace: cryptkeeper
+data:
+  init.sql: |
+    -- Your SQL script here
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: cryptkeeper
+data:
+  prometheus.yml: |
+    # Your Prometheus config here
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cryptkeeper-config
+  namespace: cryptkeeper
+data:
+  config.yaml: |
+    # Your CryptKeeper config here

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+// package fpepb;
+package cryptokeeper.crypto.tink;
+
+option go_package = "github.com/cryptkeeperhq/cryptkeeper/internal/fpe/proto";
+
+enum FfxMode {
+  FF1 = 0;
+  FF31 = 1;
+}
+
+message FpeFfxKeyParams {
+  FfxMode algorithm = 1;
+  bytes passthrough_character_set = 2;
+  bytes output_character_set = 3;
+  bytes input_character_set = 4;
+  int32 min_input_length = 5;
+  int32 max_input_length = 6;
+}
+
+// FPEKeyFormat specifies the format for generating new FPE keys.
+message FPEKeyFormat {
+  // Key size for FPE (e.g., 32 bytes for AES-based FPE).
+  uint32 key_size = 1;
+}
+
+
+// FPEKey represents a Format-Preserving Encryption (FPE) key.
+message FPEKey {
+  // Version of the FPE key, used to manage key rotations and upgrades.
+  uint32 version = 1;
+  // The master key used for FPE. Typically, this is a 32-byte key.
+  bytes master_key = 2;
+  // The tweak used for FPE. This has to be 7-byte key.
+  bytes tweak = 3;
+  FpeFfxKeyParams params = 4;
+}
+

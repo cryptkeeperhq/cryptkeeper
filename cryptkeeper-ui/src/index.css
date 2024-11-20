@@ -1,0 +1,82 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@200;300;400;500;600;700&family=Encode+Sans:wght@200;300;400;500;600;700&family=Reddit+Mono:wght@400;500;600&display=swap');
+
+
+html {
+  scroll-behavior: smooth;
+}
+/* Padding below the footer and lighter body text */
+
+body {
+  margin: 0;
+  font-weight: 400!important;
+  -webkit-font-smoothing: antialiased!important;
+  /* background: linear-gradient(90deg,#F5F5FC,#F5F5FC)!important; */
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 0.85em!important;
+  /* color: #50517D!important; */
+  /* background-color: #FBFAFE!important; */
+}
+
+
+/* Custom styles for the page content */
+body #content {
+  /* margin-left: 250px!important; */
+  overflow: scroll;
+}
+
+body.close #content {
+  /* margin-left: 50px!important;  */
+}
+
+body #sidebar {
+  max-width: 250px;
+  padding: 0px;
+  margin: 0px;
+}
+
+
+body.close #sidebar {
+  max-width: 50px;
+  overflow: hidden;
+}
+
+
+body #sidebar .nav-link {
+  padding-left: 10px!important;
+  /* margin-bottom: 10px; */
+  /* font-size: 0.9em; */
+}
+
+body.close #sidebar .nav-link {
+  padding-left: 8px!important;
+}
+
+body.close #sidebar .nav-link span {
+  display: none;
+}
+
+body.close #sidebar .sidenav-menu-heading {
+  display: none; 
+}
+
+.spinner {
+  animation: spin infinite 5s linear;
+
+  /*You can increase or decrease the timer (5s) to 
+   increase or decrease the speed of the spinner*/
+}
+
+@keyframes spin {
+from {
+  transform: rotate(0deg);
+}
+to {
+  transform: rotate(360deg);
+}
+}

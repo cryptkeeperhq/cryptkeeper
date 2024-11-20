@@ -1,0 +1,8 @@
+
+# dependencies
+cryptkeeper-ui/node_modules
+.DS_Store
+master.key
+keyfile.pem
+certfile.pem
+cryptkeeper-cli

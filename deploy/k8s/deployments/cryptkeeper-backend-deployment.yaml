@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cryptkeeper-backend
+  namespace: cryptkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cryptkeeper-backend
+  template:
+    metadata:
+      labels:
+        app: cryptkeeper-backend
+    spec:
+      containers:
+        - name: cryptkeeper-backend
+          image: your-cryptkeeper-backend-image # Replace with your backend image
+          env:
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "mysecretpassword"
+            - name: DB_SSLMODE
+              value: "disable"
+            - name: DB_NAME
+              value: "cryptkeeper"
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: VAULT_TOKEN
+              value: ""
+            - name: VAULT_ADDRESS
+              value: "http://127.0.0.1:8200"
+            - name: MASTER_KEY
+              value: "nhuW+9axS+1VfJ17AJs5wxooi/TTYoSqWxjQWFi1Kbw="
+            - name: SERVER_HOST
+              value: "0.0.0.0"
+            - name: SERVER_PORT
+              value: "8000"
+            - name: SPICEDB_ENDPOINT
+              value: "spicedb:50051"
+            - name: SPICEDB_API_KEY
+              value: "spicedbsecret"
+            - name: KAFKA_BROKER
+              value: "kafka:9092"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - mountPath: /etc/cryptkeeper/config.yaml
+              name: config
+              subPath: config.yaml
+
+      volumes:
+        - name: config
+          configMap:
+            name: cryptkeeper-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cryptkeeper-backend
+  namespace: cryptkeeper
+spec:
+  ports:
+    - port: 8000
+  selector:
+    app: cryptkeeper-backend

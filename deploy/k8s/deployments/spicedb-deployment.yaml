@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spicedb
+  namespace: cryptkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spicedb
+  template:
+    metadata:
+      labels:
+        app: spicedb
+    spec:
+      containers:
+        - name: spicedb
+          image: quay.io/authzed/spicedb:latest
+          env:
+            - name: SPICEDB_LOG_LEVEL
+              value: "debug"
+            - name: SPICEDB_GRPC_PRESHARED_KEY
+              value: "spicedbsecret"
+            - name: SPICEDB_DATASTORE_ENGINE
+              value: "postgres"
+            - name: SPICEDB_DATASTORE_URI
+              value: "postgres://postgres:mysecretpassword@postgres:5432/cryptkeeper?sslmode=disable"
+          ports:
+            - containerPort: 50051
+            - containerPort: 8081
+          command: ["serve", "--grpc-preshared-key", "spicedbsecret", "--datastore-engine", "postgres", "--datastore-conn-uri", "postgres://postgres:mysecretpassword@postgres:5432/cryptkeeper?sslmode=disable"]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spicedb
+  namespace: cryptkeeper
+spec:
+  ports:
+    - port: 50051
+    - port: 8081
+  selector:
+    app: spicedb

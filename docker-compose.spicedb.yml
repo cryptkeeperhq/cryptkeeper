@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  spicedb:
+    image: quay.io/authzed/spicedb:latest
+    container_name: spicedb
+    environment:
+      SPICEDB_LOG_LEVEL: debug
+      SPICEDB_GRPC_PRESHARED_KEY: spicedbsecret
+      SPICEDB_GRPC_NO_TLS: "true"
+      SPICEDB_HTTP_ENABLED: "true"
+      SPICEDB_HTTP_ADDRESS: 0.0.0.0:8081
+      SPICEDB_DATASTORE_ENGINE: postgres
+      SPICEDB_DATASTORE_URI: postgres://postgres:mysecretpassword@postgres:5432/cryptkeeper?sslmode=disable
+    volumes:
+      - spicedb_data:/var/lib/spicedb
+    ports:
+      - "50051:50051"
+      - "8081:8081"
+    command: ["serve", "--grpc-preshared-key", "spicedbsecret", "--datastore-engine", "postgres", "--datastore-conn-uri", "postgres://postgres:mysecretpassword@postgres:5432/cryptkeeper?sslmode=disable"]
+    depends_on:
+      - postgres
+
+  spicedb-init:
+    image: quay.io/authzed/spicedb:latest
+    container_name: spicedb-init
+    environment:
+      SPICEDB_LOG_LEVEL: debug
+      SPICEDB_GRPC_PRESHARED_KEY: spicedbsecret
+      SPICEDB_DATASTORE_ENGINE: postgres
+      SPICEDB_DATASTORE_URI: postgres://postgres:mysecretpassword@postgres:5432/cryptkeeper?sslmode=disable
+    entrypoint: ["spicedb", "migrate", "head", "--datastore-engine", "postgres", "--datastore-conn-uri", "postgres://postgres:mysecretpassword@postgres:5432/cryptkeeper?sslmode=disable"]
+    depends_on:
+      - postgres
+
+volumes:
+  spicedb_data:

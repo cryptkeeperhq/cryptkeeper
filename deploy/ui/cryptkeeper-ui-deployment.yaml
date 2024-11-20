@@ -1,0 +1,27 @@
+# cryptkeeper-ui-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cryptkeeper-ui
+  namespace: cryptkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cryptkeeper-ui
+  template:
+    metadata:
+      labels:
+        app: cryptkeeper-ui
+    spec:
+      containers:
+        - name: cryptkeeper-ui
+          image: localhost:5000/cryptkeeper-cryptkeeper-ui:latest
+          imagePullPolicy: Never
+          resources:
+              limits:
+                memory: 128Mi
+                cpu: 500m
+          ports:
+            - containerPort: 80
+

@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS cryptkeeper;
+CREATE DATABASE cryptkeeper;

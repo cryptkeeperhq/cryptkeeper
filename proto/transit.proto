@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package transit;
+
+option go_package = "github.com/cryptkeeperhq/cryptkeeper/proto/transit;transit";
+
+
+import "google/api/annotations.proto";
+
+service TransitService {
+  rpc AuthTransit (AuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      get: "/transit"
+    };
+  }
+
+  rpc ListTransitKeys (EmptyRequest) returns (ListKeysResponse) {
+    option (google.api.http) = {
+      get: "/transit/keys"
+    };
+  }
+
+  rpc Encrypt (EncryptRequest) returns (EncryptResponse) {
+    option (google.api.http) = {
+      post: "/transit/encrypt"
+      body: "*"
+    };
+  }
+
+  rpc Decrypt (DecryptRequest) returns (DecryptResponse) {
+    option (google.api.http) = {
+      post: "/transit/decrypt"
+      body: "*"
+    };
+  }
+
+  rpc Sign (SignRequest) returns (SignResponse) {
+    option (google.api.http) = {
+      post: "/transit/sign"
+      body: "*"
+    };
+  }
+
+  rpc Verify (VerifyRequest) returns (VerifyResponse) {
+    option (google.api.http) = {
+      post: "/transit/verify"
+      body: "*"
+    };
+  }
+
+  rpc Hmac (HmacRequest) returns (HmacResponse) {
+    option (google.api.http) = {
+      post: "/transit/hmac"
+      body: "*"
+    };
+  }
+
+  rpc HmacVerify (HmacVerifyRequest) returns (HmacVerifyResponse) {
+    option (google.api.http) = {
+      post: "/transit/hmac/verify"
+      body: "*"
+    };
+  }
+}
+
+message AuthRequest {}
+message AuthResponse {}
+
+message EmptyRequest {}
+
+message ListKeysResponse {
+  repeated string keys = 1;
+}
+
+message EncryptRequest {
+  string key_id = 1;
+  bytes plaintext = 2;
+}
+
+message EncryptResponse {
+  bytes ciphertext = 1;
+}
+
+message DecryptRequest {
+  string key_id = 1;
+  bytes ciphertext = 2;
+}
+
+message DecryptResponse {
+  bytes plaintext = 1;
+}
+
+message SignRequest {
+  string key_id = 1;
+  bytes message = 2;
+}
+
+message SignResponse {
+  bytes signature = 1;
+}
+
+message VerifyRequest {
+  string key_id = 1;
+  bytes message = 2;
+  bytes signature = 3;
+}
+
+message VerifyResponse {
+  bool valid = 1;
+}
+
+message HmacRequest {
+  string key_id = 1;
+  bytes message = 2;
+}
+
+message HmacResponse {
+  bytes hmac = 1;
+}
+
+message HmacVerifyRequest {
+  string key_id = 1;
+  bytes message = 2;
+  bytes hmac = 3;
+}
+
+message HmacVerifyResponse {
+  bool valid = 1;
+}

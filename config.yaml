@@ -1,0 +1,50 @@
+server:
+  host: "localhost"
+  port: 8000
+  jwt_key: "cryptkeeper_jwt_key"
+
+tls:
+  enabled: false
+  cert_file: "./examples/server/server-certificate.pem"
+  key_file: "./examples/server/server-key.pem"
+  ca: "./examples/client/ca.pem"
+
+auth:
+  sso_enabled: false
+  keycloak_url: "http://localhost:9999"
+  client_id: "apiClient"
+  client_secret: "4NZ9L23PRPEo51yZnclWCbXEyWU70rgU"
+  realm: "myrealm"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: mysecretpassword
+  name: cryptkeeper
+  sslmode: "disable"
+
+zanzibar:
+  enabled: false
+  api_key: "spicedbsecret"
+  endpoint: "localhost:50051"
+
+kafka:
+  enabled: false
+  broker: "localhost:9092"
+
+sync:
+  platform: ""  # or "aws", "azure"
+  vault:
+    address: "http://127.0.0.1:8200"
+    token: ""
+  aws:
+    region: "us-east-1"
+    access_key_id: ""
+    secret_access_key: ""
+  azure:
+    tenant_id: ""
+    client_id: ""
+    client_secret: ""
+    key_vault_name: ""
+

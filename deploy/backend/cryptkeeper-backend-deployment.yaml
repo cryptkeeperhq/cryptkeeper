@@ -1,0 +1,54 @@
+# cryptkeeper-backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cryptkeeper-backend
+  namespace: cryptkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cryptkeeper-backend
+  template:
+    metadata:
+      labels:
+        app: cryptkeeper-backend
+    spec:
+      containers:
+        - name: cryptkeeper-backend
+          image: localhost:5000/cryptkeeper-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASSWORD
+              value: mysecretpassword
+            - name: DB_NAME
+              value: cryptkeeper
+            - name: SECURITY_MASTER_KEY
+              value: myvalue
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/cryptkeeper/config.yaml
+              subPath: config.yaml
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -h postgres -p 5432 -U postgres
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3              
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cryptkeeper-config

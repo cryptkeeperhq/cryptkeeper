@@ -1,0 +1,11 @@
+# redis-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: cryptkeeper
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis

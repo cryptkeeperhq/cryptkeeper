@@ -1,0 +1,40 @@
+server:
+  host: "localhost"
+  port: 8000
+  jwt_key: "cryptkeeper_jwt_key"
+
+tls:
+  enabled: false
+  cert_file: "./certfile.pem"
+  key_file: "./keyfile.pem"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: mysecretpassword
+  name: cryptkeeper
+  sslmode: "disable"
+
+zanzibar:
+  api_key: "spicedbsecret"
+  endpoint: "localhost:50051"
+
+kafka:
+  broker: "localhost:9092"
+
+sync:
+  platform: "vault"  # or "aws", "azure"
+  vault:
+    address: "http://127.0.0.1:8200"
+    token: ""
+  aws:
+    region: "us-east-1"
+    access_key_id: ""
+    secret_access_key: ""
+  azure:
+    tenant_id: ""
+    client_id: ""
+    client_secret: ""
+    key_vault_name: ""
+

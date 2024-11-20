@@ -1,0 +1,14 @@
+# cryptkeeper-ui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cryptkeeper-ui
+  namespace: cryptkeeper
+spec:
+  selector:
+    app: cryptkeeper-ui
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

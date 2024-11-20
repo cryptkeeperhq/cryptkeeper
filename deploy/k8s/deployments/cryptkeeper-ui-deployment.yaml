@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cryptkeeper-ui
+  namespace: cryptkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cryptkeeper-ui
+  template:
+    metadata:
+      labels:
+        app: cryptkeeper-ui
+    spec:
+      containers:
+        - name: cryptkeeper-ui
+          image: your-cryptkeeper-ui-image # Replace with your UI image
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cryptkeeper-ui
+  namespace: cryptkeeper
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: cryptkeeper-ui

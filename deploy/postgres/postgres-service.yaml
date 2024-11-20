@@ -1,0 +1,11 @@
+# postgres-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: cryptkeeper
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres

@@ -1,0 +1,14 @@
+# cryptkeeper-backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cryptkeeper-backend
+  namespace: cryptkeeper
+spec:
+  selector:
+    app: cryptkeeper-backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: LoadBalancer
