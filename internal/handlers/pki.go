@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"time"
 
-	enginepki "github.com/cryptkeeperhq/cryptkeeper/internal/engine/pki"
 	"github.com/cryptkeeperhq/cryptkeeper/internal/models"
 	"github.com/go-pg/pg/v10"
 )
@@ -86,7 +85,8 @@ func (h *Handler) addCA(w http.ResponseWriter, r *http.Request) {
 
 		// var rootCA models.RootCA
 		// rootCA.RootCert = block.Bytes
-		caCert, err := x509.ParseCertificate(block.Bytes)
+		// caCert, err := x509.ParseCertificate(block.Bytes)
+		_, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
 			log.Println("Invalid CA Certificate")
 			return err
@@ -111,15 +111,22 @@ func (h *Handler) addCA(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		rootCert, rootKey, err := enginepki.GenerateRootCA(caCert, caKey.(*rsa.PrivateKey), input.Name)
-		if err != nil {
-			return err
-		}
+		// rootCert, rootKey, err := enginepki.GenerateRootCA(caCert, caKey.(*rsa.PrivateKey), input.Name)
+		// if err != nil {
+		// 	return err
+		// }
+
+		// fmt.Println(rootCert, rootKey)
+		// rootCA := models.RootCA{
+		// 	CA:       ca.ID,
+		// 	RootCert: rootCert.Raw,
+		// 	RootKey:  x509.MarshalPKCS1PrivateKey(rootKey),
+		// }
 
 		rootCA := models.RootCA{
 			CA:       ca.ID,
-			RootCert: rootCert.Raw,
-			RootKey:  x509.MarshalPKCS1PrivateKey(rootKey),
+			RootCert: ca.CACert,
+			RootKey:  x509.MarshalPKCS1PrivateKey(caKey.(*rsa.PrivateKey)),
 		}
 
 		_, err = h.DB.Model(&rootCA).Insert()

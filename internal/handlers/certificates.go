@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,25 +19,39 @@ func (h *Handler) DownloadCA(w http.ResponseWriter, r *http.Request) {
 	pathID := r.URL.Query().Get("path_id")
 
 	var subCA models.SubCA
-
 	err := h.DB.Model(&subCA).Where("path_id = ?", pathID).First()
 	if err != nil {
 		http.Error(w, "subCA not found", http.StatusBadRequest)
 	}
 
 	var rootCA models.RootCA
-
 	err = h.DB.Model(&rootCA).Where("id = ?", subCA.RootCA).First()
 	if err != nil {
 		http.Error(w, "rootCA not found", http.StatusBadRequest)
 		return
 	}
 
-	rootCert, err := x509.ParseCertificate(rootCA.RootCert)
-	if err != nil {
-		http.Error(w, "subCA parsing failed", http.StatusBadRequest)
+	block, _ := pem.Decode([]byte(rootCA.RootCert))
+	if block == nil || block.Type != "CERTIFICATE" {
+		log.Println("Failed to decode PEM block containing the certificate")
+		http.Error(w, "Failed to decode PEM block containing the certificate", http.StatusBadRequest)
 		return
 	}
+
+	// var rootCA models.RootCA
+	// rootCA.RootCert = block.Bytes
+	rootCert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		log.Println("Invalid CA Certificate")
+		http.Error(w, "Invalid CA Certificate", http.StatusBadRequest)
+		return
+	}
+
+	// rootCert, err := x509.ParseCertificate(rootCA.RootCert)
+	// if err != nil {
+	// 	http.Error(w, "rootCA parsing failed", http.StatusBadRequest)
+	// 	return
+	// }
 
 	// rootCACertPEM, err := os.ReadFile("root_ca.pem")
 	// if err != nil {
@@ -122,11 +137,27 @@ func (h *Handler) DownloadCertificate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rootCert, err := x509.ParseCertificate(rootCA.RootCert)
-	if err != nil {
-		http.Error(w, "rootCA parsing failed", http.StatusBadRequest)
+	block, _ := pem.Decode([]byte(rootCA.RootCert))
+	if block == nil || block.Type != "CERTIFICATE" {
+		log.Println("Failed to decode PEM block containing the certificate")
+		http.Error(w, "Failed to decode PEM block containing the certificate", http.StatusBadRequest)
 		return
 	}
+
+	// var rootCA models.RootCA
+	// rootCA.RootCert = block.Bytes
+	rootCert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		log.Println("Invalid CA Certificate")
+		http.Error(w, "Invalid CA Certificate", http.StatusBadRequest)
+		return
+	}
+
+	// rootCert, err := x509.ParseCertificate(rootCA.RootCert)
+	// if err != nil {
+	// 	http.Error(w, "rootCA parsing failed", http.StatusBadRequest)
+	// 	return
+	// }
 
 	// Decrypt the path key
 	decryptedPathKeyHandle, err := h.CryptoOps.DecryptPathKey(pathDetails.KeyData)

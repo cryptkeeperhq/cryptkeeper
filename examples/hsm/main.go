@@ -10,9 +10,7 @@ import (
 )
 
 type HSM struct {
-	ctx       *pkcs11.Ctx
-	session   pkcs11.SessionHandle
-	slotLabel string
+	ctx *pkcs11.Ctx
 }
 
 func (h *HSM) getSlot(targetLabel string) (uint, error) {
@@ -41,31 +39,38 @@ func (h *HSM) getSlot(targetLabel string) (uint, error) {
 func main() {
 	libraryPath := os.Getenv("PKCS11_LIB")
 	slotLabel := os.Getenv("PKCS11_LABEL")
-	keyLabel := os.Getenv("PKCS11_LABEL")
+	keyLabel := "MyKeyLabel"
 	hsmPin := os.Getenv("PKCS11_PIN")
 
 	fmt.Println(libraryPath, slotLabel, keyLabel, hsmPin)
 	h := &HSM{}
-	h.ctx = pkcs11.New(libraryPath) // Path to your SoftHSM library
+	h.ctx = pkcs11.New(libraryPath)
+	if h.ctx == nil {
+		log.Fatalf("Failed to initialize PKCS#11 library: %s", libraryPath)
+	}
+
 	err := h.ctx.Initialize()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to initialize PKCS#11 context: %v", err)
 	}
+	log.Println("PKCS11 initialized")
 
 	defer h.ctx.Destroy()
 	defer h.ctx.Finalize()
 
-	slot, err := h.getSlot(keyLabel)
+	slot, err := h.getSlot(slotLabel)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to get slot: %v", err)
 	}
 
-	fmt.Println(slot)
+	log.Println("PKCS11 Slot found")
 
 	session, err := h.ctx.OpenSession(slot, pkcs11.CKF_SERIAL_SESSION|pkcs11.CKF_RW_SESSION)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to Open Session: %v", err)
 	}
+
+	log.Println("PKCS11 session created")
 
 	defer func() {
 		if cerr := h.ctx.CloseSession(session); cerr != nil {
@@ -73,15 +78,54 @@ func main() {
 		}
 	}()
 
-	fmt.Printf("Session opened: %v\n", session)
+	log.Println("PKCS11 trying to login")
 
-	err = h.ctx.Login(session, pkcs11.CKU_USER, hsmPin)
-	if err != nil {
-		log.Fatalf("Failed to login: %v", err)
+	info, err := h.ctx.GetInfo()
+	fmt.Println(info)
+	fmt.Println(err)
+
+	// Safely call a function that might panic
+	safeExecute(func() {
+		err = h.ctx.Login(session, pkcs11.CKU_USER, hsmPin)
+		if err != nil {
+			log.Printf("Failed to login: %v", err)
+		}
+
+	})
+
+	log.Println("Login successful!")
+
+	// Create a key
+	template := []*pkcs11.Attribute{
+		pkcs11.NewAttribute(pkcs11.CKA_LABEL, keyLabel),
+		pkcs11.NewAttribute(pkcs11.CKA_CLASS, pkcs11.CKO_SECRET_KEY),
+		pkcs11.NewAttribute(pkcs11.CKA_KEY_TYPE, pkcs11.CKK_AES),
+		pkcs11.NewAttribute(pkcs11.CKA_VALUE_LEN, 32), // 256-bit AES key
+		pkcs11.NewAttribute(pkcs11.CKA_ENCRYPT, true), // Enable encryption
+		pkcs11.NewAttribute(pkcs11.CKA_DECRYPT, true), // Enable decryption
 	}
 
-	fmt.Println("Login successful!")
+	_, err = h.ctx.GenerateKey(session, []*pkcs11.Mechanism{
+		pkcs11.NewMechanism(pkcs11.CKM_AES_KEY_GEN, nil),
+	}, template)
+	if err != nil {
+		log.Fatalf("Failed to create key: %v", err)
+	}
 
+	fmt.Printf("Key with label '%s' created successfully!\n", keyLabel)
+
+}
+
+func safeExecute(fn func()) {
+	defer func() {
+		if r := recover(); r != nil {
+			// Handle the panic
+			fmt.Printf("Recovered from panic: %v\n", r)
+		}
+	}()
+
+	// Execute the potentially risky function
+	fn()
 }
 
 // // Generate a new Path Key (DEK)

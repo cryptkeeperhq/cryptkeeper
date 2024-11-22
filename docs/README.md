@@ -39,4 +39,14 @@ openssl pkcs12 -in INFILE.p12 -out OUTFILE.crt -nokeys
 
 
 openssl pkcs12 -info -in certificate.p12 -nodes -nocerts
+
+
+extract certificate
+openssl pkcs12 -in certificate.p12 -out certificate.pem -nodes
+
+see details
+openssl x509 -in certificate.pem -text -noout
+
+verify against ca
+openssl verify -CAfile ca.pem certificate.pem
 ```

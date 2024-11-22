@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"log"
 	"net/http"
@@ -211,11 +212,25 @@ func (h *Handler) CreatePath(w http.ResponseWriter, r *http.Request) {
 			// 	return err
 			// }
 
-			rootCert, err := x509.ParseCertificate(rootCA.RootCert)
+			block, _ := pem.Decode([]byte(rootCA.RootCert))
+			if block == nil || block.Type != "CERTIFICATE" {
+				log.Println("Failed to decode PEM block containing the certificate")
+				return err
+			}
+
+			// var rootCA models.RootCA
+			// rootCA.RootCert = block.Bytes
+			rootCert, err := x509.ParseCertificate(block.Bytes)
 			if err != nil {
 				log.Println("Invalid CA Certificate")
 				return err
 			}
+
+			// rootCert, err := x509.ParseCertificate(rootCA.RootCert)
+			// if err != nil {
+			// 	log.Println("Invalid CA Certificate")
+			// 	return err
+			// }
 
 			// var rootCA models.RootCA
 			// rootCA.RootCert = block.Bytes
