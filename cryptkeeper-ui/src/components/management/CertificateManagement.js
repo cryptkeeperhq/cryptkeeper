@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Row, Col, Card, Form, Button, ListGroup, Alert, Container, InputGroup } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, ListGroup, Alert, Container, InputGroup, Table } from 'react-bootstrap';
 import AppRoles from '../AppRole';
 import Title from '../common/Title';
 import { RoleManagementHelp } from '../help/Help';
 import { useApi } from '../../api/api';
+import { FaDownload } from 'react-icons/fa';
 
 const CertificateManagement = ({ setTitle, setHelp }) => {
 
@@ -26,6 +27,28 @@ const CertificateManagement = ({ setTitle, setHelp }) => {
 
     const [message, setMessage] = useState('');
 
+
+    const hasFetchDone = useRef(false);
+    useEffect(() => {
+        if (!hasFetchDone.current) {
+            hasFetchDone.current = true;
+            fetchCertificates()
+        }
+    }, []);
+
+
+
+
+    const fetchCertificates = async () => {
+        try {
+            const result = await get(`/certificates`);
+            setCertificates(result || [])
+        } catch (error) {
+            setMessage(error.message);
+        }
+
+    };
+
     const createCertificate = async (e) => {
         e.preventDefault();
 
@@ -42,9 +65,7 @@ const CertificateManagement = ({ setTitle, setHelp }) => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-
-            // fetchAppRoles()
+            fetchCertificates()
         } catch (error) {
             setMessage(error.message);
         }
@@ -65,14 +86,33 @@ const CertificateManagement = ({ setTitle, setHelp }) => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-            // fetchAppRoles()
         } catch (error) {
             setMessage(error.message);
         }
 
 
     };
+
+    const downloadCertificate = async (name) => {
+        
+
+        try {
+            const data = await downloadPost(`/certificates`, { name: name });
+            const blob = await data.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = name + '.p12';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            setMessage(error.message);
+        }
+
+
+    };
+
 
 
     return (
@@ -132,6 +172,28 @@ const CertificateManagement = ({ setTitle, setHelp }) => {
             </Container>
 
 
+            <Card className='mt-3'>
+                <Card.Header>Existing mTLS Certificates</Card.Header>
+                <Table striped bordered hover className="mt-3">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {certificates.map(role => (
+                            <tr key={role.name}>
+                                <td>{role.name}</td>
+                                <td>{role.description}</td>
+                                <td width={50}><button className='p-0 btn btn-transparent' onClick={() => downloadCertificate(role.name)} type="submit"><FaDownload /></button></td>
+
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </Card>
 
 
 

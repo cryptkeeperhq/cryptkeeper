@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Navbar, Nav, Container, Card } from 'react-bootstrap';
+import { Navbar, Nav, Container, Card, Accordion } from 'react-bootstrap';
 import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeContext';
 import HelpCard from './HelpCard';
@@ -76,9 +76,49 @@ const NavBar = ({ token, logout }) => {
                             </>
                         ) :
                             <>
-                                <NavLink className="nav-link" to="/"><FaHome className='me-2' /><span>Dashboard</span></NavLink>
+                                            <NavLink className="nav-link" to="/"><FaHome className='me-2' /><span>Dashboard</span></NavLink>
 
-                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>Secrets Management</strong></div>
+                                <Accordion defaultActiveKey="0" flush>
+                                    <Accordion.Item eventKey="0">
+                                        <Accordion.Header><FaKey className='me-2' /> Secrets Management</Accordion.Header>
+                                        <Accordion.Body className='p-0'>
+                                            <NavLink className="nav-link" to="/user/secrets/kv"><FaList className='me-2' /><span>KV</span></NavLink>
+                                            <NavLink className="nav-link" to="/user/secrets/transit"><FaKey className='me-2' /><span>Transit</span></NavLink>
+                                            <NavLink className="nav-link" to="/user/secrets/pki"><FaCertificate className='me-2' /><span>PKI</span></NavLink>
+                                            <NavLink className="nav-link" to="/user/secrets/database"><FaDatabase className='me-2' /><span>Database</span></NavLink>
+
+
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    <Accordion.Item eventKey="1">
+                                        <Accordion.Header><FaCogs className='me-2' /> System</Accordion.Header>
+                                        <Accordion.Body className='p-0'>
+                                            <NavLink className="nav-link" to="/secrets/create"><FaPlusCircle className='me-2' /><span>Create Secret</span></NavLink>
+                                            <NavLink className="nav-link" to="/approval-requests"><FaCheckCircle className='me-2' /><span>Approval Requests</span></NavLink>
+                                            <NavLink className="nav-link" to="/paths"><FaNetworkWired className='me-2' /><span>Paths</span></NavLink>
+                                            <NavLink className="nav-link" to="/policies"><FaFileAlt className='me-2' /><span>Policies</span></NavLink>
+                                            <NavLink className="nav-link" to="/pki"><FaCertificate className='me-2' /><span>Create PKI CA</span></NavLink>
+
+                                            <NavLink className="nav-link" to="/audit-logs"><FaListAlt className='me-2' /><span>Audit Logs</span></NavLink>
+                                            {/* <NavLink className="nav-link" to="/workflows"><FaNetworkWired className='me-2' /><span>Workflows</span></NavLink> */}
+
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+
+                                    <Accordion.Item eventKey="2">
+                                        <Accordion.Header><FaUsers className='me-2'  /> Auth</Accordion.Header>
+                                        <Accordion.Body className='p-0'>
+                                            <NavLink className="nav-link" to="/management"><FaUsersCog className='me-2' /><span>Users and Groups</span></NavLink>
+                                            <NavLink className="nav-link" to="/roles"><FaServer className='me-2' /><span>App Roles</span></NavLink>
+                                            <NavLink className="nav-link" to="/certificates"><FaCertificate className='me-2' /><span>Certificates</span></NavLink>
+
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+
+
+
+                                {/* <div className='p-2 ps-3 sidenav-menu-heading'><strong>Secrets Management</strong></div>
                                 <NavLink className="nav-link" to="/user/secrets/kv"><FaList className='me-2' /><span>KV</span></NavLink>
                                 <NavLink className="nav-link" to="/user/secrets/transit"><FaKey className='me-2' /><span>Transit</span></NavLink>
                                 <NavLink className="nav-link" to="/user/secrets/pki"><FaCertificate className='me-2' /><span>PKI</span></NavLink>
@@ -96,11 +136,11 @@ const NavBar = ({ token, logout }) => {
                                 <NavLink className="nav-link" to="/audit-logs"><FaListAlt className='me-2' /><span>Audit Logs</span></NavLink>
                                 {/* <NavLink className="nav-link" to="/workflows"><FaNetworkWired className='me-2' /><span>Workflows</span></NavLink> */}
 
-                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>Auth</strong></div>
+                                {/* <div className='p-2 ps-3 sidenav-menu-heading'><strong>Auth</strong></div>
 
                                 <NavLink className="nav-link" to="/management"><FaUsersCog className='me-2' /><span>Users and Groups</span></NavLink>
                                 <NavLink className="nav-link" to="/roles"><FaServer className='me-2' /><span>App Roles</span></NavLink>
-                                <NavLink className="nav-link" to="/certificates"><FaCertificate className='me-2' /><span>Certificates</span></NavLink>
+                                <NavLink className="nav-link" to="/certificates"><FaCertificate className='me-2' /><span>Certificates</span></NavLink>  */}
 
 
 

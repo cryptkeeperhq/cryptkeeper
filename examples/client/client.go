@@ -17,9 +17,9 @@ import (
 
 var (
 	// Paths to the .p12 file and CA certificate
+	caPath      = "./examples/client/ca.pem"
 	p12Path     = "./examples/client/client.p12"
 	p12Password = "password"
-	caPath      = "./examples/client/ca.pem"
 )
 
 // CryptoInterface defines the interface for cryptographic operations, focusing on HTTP API interaction.
@@ -119,22 +119,22 @@ func main() {
 		return
 	}
 
-	// // Load the CA certificate
-	// caCertPool, err := loadCA(caPath)
-	// if err != nil {
-	// 	fmt.Printf("Error loading CA certificate: %v\n", err)
-	// 	return
-	// }
+	// Load the CA certificate
+	caCertPool, err := loadCA(caPath)
+	if err != nil {
+		fmt.Printf("Error loading CA certificate: %v\n", err)
+		return
+	}
 
-	// // Verify it the certificate is valid
-	// if err := verifyCertificate(clientCert, caCertPool); err != nil {
-	// 	fmt.Printf("Certificate verification failed: %v\n", err)
-	// }
+	// Verify it the certificate is valid
+	if err := verifyCertificate(clientCert, caCertPool); err != nil {
+		fmt.Printf("Certificate verification failed: %v\n", err)
+	}
 
 	// Configure the TLS client
 	tlsConfig := &tls.Config{
-		Certificates: []tls.Certificate{clientCert},
-		// RootCAs:            caCertPool,
+		Certificates:       []tls.Certificate{clientCert},
+		RootCAs:            caCertPool,
 		InsecureSkipVerify: true, // Should be false for production, but we need it true due to self signed certificate
 	}
 

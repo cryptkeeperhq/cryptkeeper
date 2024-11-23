@@ -263,6 +263,7 @@ func (h *Handler) NewHandler() *mux.Router {
 	groupsRouter.Handle("/remove_user", http.HandlerFunc(h.RemoveUserFromGroup)).Methods("POST")
 
 	certsRouter := authRouter.PathPrefix("/certificates").Subrouter()
+	certsRouter.Handle("", http.HandlerFunc(h.ListClientCerts)).Methods("GET")
 	certsRouter.Handle("", http.HandlerFunc(h.CreateClientCert)).Methods("POST")
 	certsRouter.Handle("/ca", http.HandlerFunc(h.DownloadClientCA)).Methods("GET")
 

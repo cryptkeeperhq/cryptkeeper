@@ -71,6 +71,7 @@ func createSchema(db *pg.DB) error {
 		(*models.Secret)(nil),
 		(*models.User)(nil),
 		(*models.Group)(nil),
+		(*models.Certificate)(nil),
 		(*models.UserGroup)(nil),
 		(*models.SecretDeletion)(nil),
 		(*models.Notification)(nil),
