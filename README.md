@@ -7,9 +7,10 @@
 
 CryptKeeper is an advanced secrets management platform designed to securely store and manage sensitive information. It supports various secret engines like Key-Value (KV), Transit, PKI, and Database. The platform also integrates with external systems such as AWS Secrets Manager, Azure Key Vault, and HashiCorp Vault.
 
+<img src="./docs/images/diagram1.png" >
+
 > **CryptKeeper is still under active development and not production ready**
 > 
-<img src="./docs/images/1.png" >
 
 
 ## Table of Contents
@@ -49,6 +50,9 @@ CryptKeeper is an advanced secrets management platform designed to securely stor
   - [License](#license)
 
 ## Features
+
+<img src="./docs/images/1.png" >
+
 
 ### Secrets Management:
 - **Web Interface**: Intuitive web interface for managing secrets and policies.

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react
 import { useTheme } from '../theme/ThemeContext';
 import HelpCard from './HelpCard';
 import logo from '../assets/logo.webp';
-import { FaKey, FaFolder, FaFileAlt, FaHistory, FaTrashAlt, FaEdit, FaUser, FaPlus, FaHome, FaCheck, FaShieldAlt, FaList, FaSignOutAlt, FaCog, FaCogs, FaCheckCircle, FaUsers, FaUsersCog, FaKeybase, FaEnvelope, FaListAlt, FaPlusCircle, FaNetworkWired, FaDochub, FaFileWord, FaServer, FaCertificate, FaBars, FaLock, FaChevronLeft, FaDashcube, FaDatabase } from 'react-icons/fa';
+import { FaKey, FaFolder, FaFileAlt, FaHistory, FaTrashAlt, FaEdit, FaUser, FaPlus, FaHome, FaCheck, FaShieldAlt, FaList, FaSignOutAlt, FaCog, FaCogs, FaCheckCircle, FaUsers, FaUsersCog, FaKeybase, FaEnvelope, FaListAlt, FaPlusCircle, FaNetworkWired, FaDochub, FaFileWord, FaServer, FaCertificate, FaBars, FaLock, FaChevronLeft, FaDashcube, FaDatabase, FaBriefcase } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Notifications from './Notifications';
 
@@ -38,15 +38,15 @@ const NavBar = ({ token, logout }) => {
 
     return (
         <>
-            <div className=''>
+            {/* <div className=''>
                 <button type="button" id="sidebar_menu_icon"
                     onClick={() => {
                         toggleSidebar();
                     }}
                     className="p-2 ms-1 ps-3 border-0 shadow-none  toggle-button  btn-sm   btn btn-transparent"><FaBars /></button>
-            </div>
+            </div> */}
             <Navbar.Brand className=''>
-                <div className='mt-3 ms-2 d-flex align-items-center '>
+                <div className='mt-4 ms-2 d-flex align-items-center '>
                     <NavLink to="/" className="">
                         <div className='text-center' style={{ width: "50px" }}><img className='rounded-2 w-75' src={logo} /></div>
                     </NavLink>
@@ -76,11 +76,20 @@ const NavBar = ({ token, logout }) => {
                             </>
                         ) :
                             <>
-                                            <NavLink className="nav-link" to="/"><FaHome className='me-2' /><span>Dashboard</span></NavLink>
 
                                 <Accordion defaultActiveKey="0" flush>
-                                    <Accordion.Item eventKey="0">
-                                        <Accordion.Header><FaKey className='me-2' /> Secrets Management</Accordion.Header>
+                                <Accordion.Item eventKey="0">
+                                        <Accordion.Header>Home</Accordion.Header>
+                                        <Accordion.Body className='p-0'>
+                                        <NavLink className="nav-link" to="/"><FaBriefcase className='me-2' /><span>Dashboard</span></NavLink>
+                                        <NavLink className="nav-link" to="/audit-logs"><FaListAlt className='me-2' /><span>Audit Logs</span></NavLink>
+
+
+
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    <Accordion.Item eventKey="1">
+                                        <Accordion.Header>Secrets Management</Accordion.Header>
                                         <Accordion.Body className='p-0'>
                                             <NavLink className="nav-link" to="/user/secrets/kv"><FaList className='me-2' /><span>KV</span></NavLink>
                                             <NavLink className="nav-link" to="/user/secrets/transit"><FaKey className='me-2' /><span>Transit</span></NavLink>
@@ -90,8 +99,8 @@ const NavBar = ({ token, logout }) => {
 
                                         </Accordion.Body>
                                     </Accordion.Item>
-                                    <Accordion.Item eventKey="1">
-                                        <Accordion.Header><FaCogs className='me-2' /> System</Accordion.Header>
+                                    <Accordion.Item eventKey="2">
+                                        <Accordion.Header>System</Accordion.Header>
                                         <Accordion.Body className='p-0'>
                                             <NavLink className="nav-link" to="/secrets/create"><FaPlusCircle className='me-2' /><span>Create Secret</span></NavLink>
                                             <NavLink className="nav-link" to="/approval-requests"><FaCheckCircle className='me-2' /><span>Approval Requests</span></NavLink>
@@ -99,14 +108,13 @@ const NavBar = ({ token, logout }) => {
                                             <NavLink className="nav-link" to="/policies"><FaFileAlt className='me-2' /><span>Policies</span></NavLink>
                                             <NavLink className="nav-link" to="/pki"><FaCertificate className='me-2' /><span>Create PKI CA</span></NavLink>
 
-                                            <NavLink className="nav-link" to="/audit-logs"><FaListAlt className='me-2' /><span>Audit Logs</span></NavLink>
                                             {/* <NavLink className="nav-link" to="/workflows"><FaNetworkWired className='me-2' /><span>Workflows</span></NavLink> */}
 
                                         </Accordion.Body>
                                     </Accordion.Item>
 
-                                    <Accordion.Item eventKey="2">
-                                        <Accordion.Header><FaUsers className='me-2'  /> Auth</Accordion.Header>
+                                    <Accordion.Item eventKey="3">
+                                        <Accordion.Header>Auth</Accordion.Header>
                                         <Accordion.Body className='p-0'>
                                             <NavLink className="nav-link" to="/management"><FaUsersCog className='me-2' /><span>Users and Groups</span></NavLink>
                                             <NavLink className="nav-link" to="/roles"><FaServer className='me-2' /><span>App Roles</span></NavLink>

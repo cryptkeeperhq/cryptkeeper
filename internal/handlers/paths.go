@@ -416,10 +416,12 @@ func (h *Handler) ListUserPaths(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("User Policy IDs", groupPolicyIds)
 
 		// Get group policies
-		err = h.DB.Model((*models.GroupPolicy)(nil)).ColumnExpr("array_agg(distinct policy_id)").Where("group_id IN (?)", pg.In(userGroups)).Select(pg.Array(&groupPolicyIds))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		if len(userGroups) > 0 {
+			err = h.DB.Model((*models.GroupPolicy)(nil)).ColumnExpr("array_agg(distinct policy_id)").Where("group_id IN (?)", pg.In(userGroups)).Select(pg.Array(&groupPolicyIds))
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 

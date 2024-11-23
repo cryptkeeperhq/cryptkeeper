@@ -485,7 +485,7 @@ body #sidebar .nav-link {
   padding-left: 20px !important;
   font-size: 0.95em;
   font-weight: 400;
-  // margin: 0px 10px;
+  margin: 0px 10px;
   // font-family: "Noto Sans" !important;
 }
 
@@ -495,6 +495,15 @@ body #sidebar .accordion-button:not(.collapsed) {
   box-shadow: none!important;
 }
 
+body #sidebar .accordion-header button {
+  padding-left: 40px;
+}
+body #sidebar .accordion-button::after {
+  left:15px;
+  position: absolute;
+  top: 15px;
+  scale: 60%;
+}
 .nav-link {
   color: $light-text !important;
 }
