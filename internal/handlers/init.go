@@ -262,6 +262,15 @@ func (h *Handler) NewHandler() *mux.Router {
 	groupsRouter.Handle("/add_user", http.HandlerFunc(h.AddUserToGroup)).Methods("POST")
 	groupsRouter.Handle("/remove_user", http.HandlerFunc(h.RemoveUserFromGroup)).Methods("POST")
 
+	certsRouter := authRouter.PathPrefix("/certificates").Subrouter()
+	certsRouter.Handle("", http.HandlerFunc(h.CreateClientCert)).Methods("POST")
+	certsRouter.Handle("/ca", http.HandlerFunc(h.DownloadClientCA)).Methods("GET")
+
+	// App Roles Router
+	appRolesRouter := authRouter.PathPrefix("/approles").Subrouter()
+	appRolesRouter.Handle("", http.HandlerFunc(h.GetAppRoles)).Methods("GET")
+	appRolesRouter.Handle("", http.HandlerFunc(h.CreateAppRole)).Methods("POST")
+
 	// Other APIs
 	userRouter := authRouter.PathPrefix("/user").Subrouter()
 	userRouter.Handle("/paths", http.HandlerFunc(h.ListUserPaths)).Methods("GET")
@@ -326,11 +335,6 @@ func (h *Handler) NewHandler() *mux.Router {
 	// Get called from Admin PKI page
 	// pkiRouter.Handle("/download_certificate", http.HandlerFunc(h.downloadCertificate)).Methods("GET")
 	// pkiRouter.Handle("/download_private_key", http.HandlerFunc(h.downloadPrivateKey)).Methods("GET")
-
-	// App Roles Router
-	appRolesRouter := authRouter.PathPrefix("/approles").Subrouter()
-	appRolesRouter.Handle("", http.HandlerFunc(h.GetAppRoles)).Methods("GET")
-	appRolesRouter.Handle("", http.HandlerFunc(h.CreateAppRole)).Methods("POST")
 
 	// router.Handle("/assign-policy", utils.Authenticate(http.HandlerFunc(h.AssignPolicyToPath))).Methods("POST")
 

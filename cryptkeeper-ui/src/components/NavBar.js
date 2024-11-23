@@ -72,22 +72,6 @@ const NavBar = ({ token, logout }) => {
                             <>
                                 {/* <NavLink className="nav-link" to="/" ><FaChevronLeft className='me-2' /><span>Back</span></NavLink> */}
                                 <div className='p-2 ps-3 sidenav-menu-heading' onClick={toggleAdminMenu}><FaChevronLeft className='me-2' /> <strong>Back</strong></div>
-                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>System</strong></div>
-                                <NavLink className="nav-link" to="/secrets/create"><FaPlusCircle className='me-2' /><span>Create Secret</span></NavLink>
-                                <NavLink className="nav-link" to="/approval-requests"><FaCheckCircle className='me-2' /><span>Approval Requests</span></NavLink>
-                                <NavLink className="nav-link" to="/paths"><FaNetworkWired className='me-2' /><span>Paths</span></NavLink>
-                                <NavLink className="nav-link" to="/policies"><FaFileAlt className='me-2' /><span>Policies</span></NavLink>
-
-                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>Manage</strong></div>
-                                <NavLink className="nav-link" to="/pki"><FaCertificate className='me-2' /><span>Create PKI CA</span></NavLink>
-
-                                <NavLink className="nav-link" to="/audit-logs"><FaListAlt className='me-2' /><span>Audit Logs</span></NavLink>
-                                <NavLink className="nav-link" to="/workflows"><FaNetworkWired className='me-2' /><span>Workflows</span></NavLink>
-
-                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>Auth</strong></div>
-
-                                <NavLink className="nav-link" to="/management"><FaUsersCog className='me-2' /><span>Users and Groups</span></NavLink>
-                                <NavLink className="nav-link" to="/roles"><FaServer className='me-2' /><span>App Roles</span></NavLink>
 
                             </>
                         ) :
@@ -99,15 +83,32 @@ const NavBar = ({ token, logout }) => {
                                 <NavLink className="nav-link" to="/user/secrets/transit"><FaKey className='me-2' /><span>Transit</span></NavLink>
                                 <NavLink className="nav-link" to="/user/secrets/pki"><FaCertificate className='me-2' /><span>PKI</span></NavLink>
                                 <NavLink className="nav-link" to="/user/secrets/database"><FaDatabase className='me-2' /><span>Database</span></NavLink>
-                                
 
-                                
+                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>System</strong></div>
+                                <NavLink className="nav-link" to="/secrets/create"><FaPlusCircle className='me-2' /><span>Create Secret</span></NavLink>
+                                <NavLink className="nav-link" to="/approval-requests"><FaCheckCircle className='me-2' /><span>Approval Requests</span></NavLink>
+                                <NavLink className="nav-link" to="/paths"><FaNetworkWired className='me-2' /><span>Paths</span></NavLink>
+                                <NavLink className="nav-link" to="/policies"><FaFileAlt className='me-2' /><span>Policies</span></NavLink>
+
+                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>Manage</strong></div>
+                                <NavLink className="nav-link" to="/pki"><FaCertificate className='me-2' /><span>Create PKI CA</span></NavLink>
+
+                                <NavLink className="nav-link" to="/audit-logs"><FaListAlt className='me-2' /><span>Audit Logs</span></NavLink>
+                                {/* <NavLink className="nav-link" to="/workflows"><FaNetworkWired className='me-2' /><span>Workflows</span></NavLink> */}
+
+                                <div className='p-2 ps-3 sidenav-menu-heading'><strong>Auth</strong></div>
+
+                                <NavLink className="nav-link" to="/management"><FaUsersCog className='me-2' /><span>Users and Groups</span></NavLink>
+                                <NavLink className="nav-link" to="/roles"><FaServer className='me-2' /><span>App Roles</span></NavLink>
+                                <NavLink className="nav-link" to="/certificates"><FaCertificate className='me-2' /><span>Certificates</span></NavLink>
+
+
 
                                 {/* <div className='p-2 ps-3 sidenav-menu-heading'><strong>Test</strong></div>
                                 <NavLink className='nav-link' to="/transit/encryption"><FaEnvelope className='me-2' /><span>Transit Encryption</span></NavLink> */}
 
 
-<div className='p-2 ps-3 sidenav-menu-heading' onClick={toggleAdminMenu}><strong>Admin / Management</strong></div>
+                                {/* <div className='p-2 ps-3 sidenav-menu-heading' onClick={toggleAdminMenu}><strong>Admin / Management</strong></div> */}
 
                                 {/* <NavLink className="nav-link" to="/admin" onClick={toggleAdminMenu}><FaLock className='me-2' /><span>Admin</span></NavLink> */}
                             </>

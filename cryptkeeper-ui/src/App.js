@@ -45,6 +45,8 @@ import DashboardWorkflow from './components/Workflow/DashboardWorkflow';
 import { ReactKeycloakProvider, useKeycloak } from '@react-keycloak/web'
 import keycloak from './components/utils/keycloak';
 
+import CertificateManagement from './components/management/CertificateManagement';
+
 const ThemedContainer = ({ children }) => {
     const { theme } = useTheme();
 
@@ -237,6 +239,7 @@ function App() {
                                                             <Route path="/approval-requests" element={token ? <ApprovalRequests setHelp={setHelp} setTitle={setTitle} /> : <Navigate to="/login" />} />
                                                             <Route path="/audit-logs" element={token ? <AuditLogs setHelp={setHelp} setTitle={setTitle} /> : <Navigate to="/login" />} />
                                                             <Route path="/roles" element={token ? <RoleManagement setHelp={setHelp} setTitle={setTitle} /> : <Navigate to="/login" />} />
+                                                            <Route path="/certificates" element={token ? <CertificateManagement setHelp={setHelp} setTitle={setTitle} /> : <Navigate to="/login" />} />
                                                             <Route path="/paths" element={token ? <PathManagement setHelp={setHelp} setTitle={setTitle} /> : <Navigate to="/login" />} />
                                                             <Route path="/policies" element={token ? <PolicyManagement setHelp={setHelp} setTitle={setTitle} /> : <Navigate to="/login" />} />
 

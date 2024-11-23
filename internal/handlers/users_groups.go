@@ -1,15 +1,157 @@
 package handlers
 
 import (
+	"bytes"
+	"crypto/rsa"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
+	enginepki "github.com/cryptkeeperhq/cryptkeeper/internal/engine/pki"
 	"github.com/cryptkeeperhq/cryptkeeper/internal/models"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"software.sslmate.com/src/go-pkcs12"
 )
+
+func (h *Handler) DownloadClientCA(w http.ResponseWriter, r *http.Request) {
+
+	// Load CA private key and certificate
+	caCertPEM, err := os.ReadFile("./scripts/certs/ca.pem")
+	if err != nil {
+		http.Error(w, "Failed to read CA certificate", http.StatusInternalServerError)
+		return
+	}
+
+	block, _ := pem.Decode([]byte(caCertPEM))
+	if block == nil || block.Type != "CERTIFICATE" {
+		http.Error(w, "Failed to decode PEM block containing the certificate", http.StatusBadRequest)
+		return
+	}
+
+	subCert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		http.Error(w, "Failed to ParseCertificate CA certificate", http.StatusInternalServerError)
+		return
+	}
+
+	var bundle bytes.Buffer
+
+	// Encode Sub CA Certificate in PEM format
+	err = pem.Encode(&bundle, &pem.Block{
+		Type:  "CERTIFICATE",
+		Bytes: subCert.Raw,
+	})
+	if err != nil {
+		http.Error(w, "Failed to Encode Bundle", http.StatusInternalServerError)
+		return
+	}
+
+	// Set the response headers and body
+	w.Header().Set("Content-Disposition", "attachment; filename=ca.pem")
+	w.Header().Set("Content-Type", "application/x-pem-file")
+	w.Write(bundle.Bytes())
+
+}
+
+func (h *Handler) CreateClientCert(w http.ResponseWriter, r *http.Request) {
+
+	var req struct {
+		Name           string `json:"name"`
+		Description    string `json:"description"`
+		DNSName        string `json:"dns_names"`
+		IPAddresses    string `json:"ip_addresses"`
+		EmailAddresses string `json:"email_addresses"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Load CA private key and certificate
+	caCertPEM, err := os.ReadFile("./scripts/certs/ca.pem")
+	if err != nil {
+		http.Error(w, "Failed to read CA certificate", http.StatusInternalServerError)
+		return
+	}
+
+	block, _ := pem.Decode([]byte(caCertPEM))
+	if block == nil || block.Type != "CERTIFICATE" {
+		http.Error(w, "Failed to decode PEM block containing the certificate", http.StatusBadRequest)
+		return
+	}
+
+	subCert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		http.Error(w, "Failed to ParseCertificate CA certificate", http.StatusInternalServerError)
+		return
+	}
+
+	caKeyPEM, err := os.ReadFile("./scripts/certs/ca.key")
+	if err != nil {
+		http.Error(w, "Failed to read CA private key", http.StatusInternalServerError)
+		return
+	}
+
+	block, _ = pem.Decode([]byte(caKeyPEM))
+	if block == nil {
+		http.Error(w, "Failed to decode PEM block containing the certificate", http.StatusBadRequest)
+		return
+	}
+
+	var rootKey interface{}
+	rootKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		rootKey, err = x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			http.Error(w, "Invalid CA Private Key", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	dnsNames := []string{}
+	if req.DNSName != "" {
+		dnsNames = strings.Split(req.DNSName, ",")
+	}
+
+	ipAddresses := []string{}
+	if req.IPAddresses != "" {
+		ipAddresses = strings.Split(req.IPAddresses, ",")
+	}
+
+	emailAddresses := []string{}
+	if req.EmailAddresses != "" {
+		emailAddresses = strings.Split(req.EmailAddresses, ",")
+	}
+
+	expiresAt := time.Now().AddDate(0, 0, 365)
+
+	entityCert, entityKey, err := enginepki.GenerateEndEntityCertificateNew(subCert, rootKey.(*rsa.PrivateKey), req.Name, "", dnsNames, ipAddresses, emailAddresses, expiresAt)
+	if err != nil {
+		http.Error(w, "failed to generate end-entity certificate"+err.Error(), http.StatusInternalServerError)
+	}
+
+	// Encode to p12 File
+	p12Data, err := pkcs12.Modern.Encode(entityKey, entityCert, []*x509.Certificate{subCert}, "password")
+	if err != nil {
+		log.Println("Failed to create PKCS#12 file", err.Error())
+		http.Error(w, "Failed to create PKCS#12 file", http.StatusInternalServerError)
+		return
+	}
+
+	// Set the response headers and body to return the .p12 file
+	w.Header().Set("Content-Disposition", "attachment; filename=certificate.p12")
+	w.Header().Set("Content-Type", "application/x-pkcs12")
+	w.Write(p12Data)
+
+}
 
 func (h *Handler) UserInGroup(userID int64, groupName string) bool {
 	var group []models.Group

@@ -24,8 +24,6 @@ const AppRoles = () => {
 
 
     const fetchAppRoles = async () => {
-
-
         try {
             const result = await get(`/approles`);
             setAppRoles(result || [])

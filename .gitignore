@@ -8,3 +8,6 @@ certfile.pem
 cryptkeeper-cli
 *.pem
 *.p12
+*.key
+*.crt
+scripts/.srl

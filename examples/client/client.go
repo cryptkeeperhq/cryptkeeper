@@ -44,7 +44,7 @@ func loadPKCS12(p12Path, password string) (tls.Certificate, error) {
 	}
 
 	// Decode the .p12 file to extract the certificate and private key
-	privateKey, certificate, _, err := pkcs12.DecodeChain(p12Data, password)
+	privateKey, certificate, caCerts, err := pkcs12.DecodeChain(p12Data, password)
 	if err != nil {
 		return tls.Certificate{}, fmt.Errorf("failed to decode p12: %w", err)
 	}
@@ -67,9 +67,9 @@ func loadPKCS12(p12Path, password string) (tls.Certificate, error) {
 	}
 
 	// Optional: Print additional certificates in the chain
-	// for i, ca := range caCerts {
-	// 	fmt.Printf("CA Certificate %d:\n%s\n", i+1, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: ca.Raw}))
-	// }
+	for i, ca := range caCerts {
+		fmt.Printf("CA Certificate %d:\n%s\n", i+1, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: ca.Raw}))
+	}
 
 	return tlsCert, nil
 }
@@ -119,22 +119,22 @@ func main() {
 		return
 	}
 
-	// Load the CA certificate
-	caCertPool, err := loadCA(caPath)
-	if err != nil {
-		fmt.Printf("Error loading CA certificate: %v\n", err)
-		return
-	}
+	// // Load the CA certificate
+	// caCertPool, err := loadCA(caPath)
+	// if err != nil {
+	// 	fmt.Printf("Error loading CA certificate: %v\n", err)
+	// 	return
+	// }
 
-	// Verify it the certificate is valid
-	if err := verifyCertificate(clientCert, caCertPool); err != nil {
-		fmt.Printf("Certificate verification failed: %v\n", err)
-	}
+	// // Verify it the certificate is valid
+	// if err := verifyCertificate(clientCert, caCertPool); err != nil {
+	// 	fmt.Printf("Certificate verification failed: %v\n", err)
+	// }
 
 	// Configure the TLS client
 	tlsConfig := &tls.Config{
-		Certificates:       []tls.Certificate{clientCert},
-		RootCAs:            caCertPool,
+		Certificates: []tls.Certificate{clientCert},
+		// RootCAs:            caCertPool,
 		InsecureSkipVerify: true, // Should be false for production, but we need it true due to self signed certificate
 	}
 

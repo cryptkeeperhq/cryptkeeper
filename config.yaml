@@ -5,9 +5,9 @@ server:
 
 tls:
   enabled: true
-  cert_file: "./examples/server/server-certificate.pem"
-  key_file: "./examples/server/server-key.pem"
-  ca: "./examples/server/ca.pem"
+  cert_file: "./scripts/certs/server.crt"
+  key_file: "./scripts/certs/server.key"
+  ca: "./scripts/certs/ca.pem"
 
 auth:
   sso_enabled: false
