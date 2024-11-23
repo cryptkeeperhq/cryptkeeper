@@ -100,19 +100,23 @@ curl -X POST http://localhost:8080/api/pki/policies \
     }'
 ```
 
-https://github.com/jsha/minica
 
+You can download the CA and Certificate file from the UI or through the API
 
+### CA and Certificate Validation
 
-git clone https://github.com/square/certstrap
-cd certstrap
-go build
+```sh
+# See certificate details
+openssl pkcs12 -in certificate.p12 -clcerts -nodes -passin pass:"password"
+openssl x509 -in ca.pem -text -noout
 
-./certstrap init \
-     --organization "CryptKeeper" \
-     --organizational-unit "Crypt Keeper" \
-     --country "US" \
-     --province "CA" \
-     --locality "Fremont" \
-     --common-name "CryptKeeper Root"
+# extract certificate
+openssl pkcs12 -in certificate.p12 -out certificate.pem -nodes -passin pass:"password"
 
+# see details
+openssl x509 -in certificate.pem -text -noout
+
+# verify against ca
+openssl verify -CAfile ca.pem certificate.pem
+# You should see certificate.pem: OK output.
+```

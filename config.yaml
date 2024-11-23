@@ -4,10 +4,10 @@ server:
   jwt_key: "cryptkeeper_jwt_key"
 
 tls:
-  enabled: false
+  enabled: true
   cert_file: "./examples/server/server-certificate.pem"
   key_file: "./examples/server/server-key.pem"
-  ca: "./examples/client/ca.pem"
+  ca: "./examples/server/ca.pem"
 
 auth:
   sso_enabled: false

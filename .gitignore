@@ -6,3 +6,5 @@ master.key
 keyfile.pem
 certfile.pem
 cryptkeeper-cli
+*.pem
+*.p12

@@ -156,8 +156,8 @@ func TLSAuthMiddleware(next http.Handler) http.Handler {
 				log.Printf("Client Certificate Subject: %s, Serial Number: %s", clientCert.Subject.String(), clientCert.SerialNumber.String())
 			} else {
 				log.Println("No client certificate provided")
-				http.Error(w, "Client certificate required", http.StatusUnauthorized)
-				return
+				// http.Error(w, "Client certificate required", http.StatusUnauthorized)
+				// return
 			}
 		}
 

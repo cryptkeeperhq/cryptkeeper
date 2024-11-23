@@ -44,7 +44,7 @@ func main() {
 	h := handlers.Init(config)
 	router := h.NewHandler()
 	headersOk := ghandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
-	originsOk := ghandlers.AllowedOrigins([]string{"*"})
+	originsOk := ghandlers.AllowedOrigins([]string{"http://localhost:3000"})
 	methodsOk := ghandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	// Start HTTP server with graceful shutdown
@@ -69,12 +69,18 @@ func main() {
 				log.Fatal("Failed to append CA certificate")
 			}
 
+			cert, err := tls.LoadX509KeyPair(config.TLS.CertFile, config.TLS.KeyFile)
+			if err != nil {
+				log.Fatal(err)
+			}
 			// Configure the TLS server
 			server.TLSConfig = &tls.Config{
 				MinVersion:               tls.VersionTLS12,
 				ClientAuth:               tls.VerifyClientCertIfGiven,
 				ClientCAs:                caCertPool,
 				PreferServerCipherSuites: true,
+				InsecureSkipVerify:       false,
+				Certificates:             []tls.Certificate{cert},
 			}
 
 			config.Logger.Info(fmt.Sprintf("Server running on %s:%d with HTTPS", config.Server.Host, config.Server.Port))

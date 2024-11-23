@@ -54,7 +54,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Configure the TLS server
 	tlsConfig := &tls.Config{
 		MinVersion:               tls.VersionTLS12,
 		ClientAuth:               tls.RequireAndVerifyClientCert,
@@ -63,19 +62,17 @@ func main() {
 		PreferServerCipherSuites: true,
 	}
 
-	// Create a new router
 	r := mux.NewRouter()
 
-	// Define your routes and apply the TLSAuthMiddleware
 	r.Handle("/", TLSAuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, %s!", r.RemoteAddr)
 	})))
 
 	// Create a server with the TLS configuration
 	server := &http.Server{
-		Addr:      ":8443", // Change the port if needed
+		Addr:      ":8443",
 		TLSConfig: tlsConfig,
-		Handler:   r, // Use the Gorilla Mux router
+		Handler:   r,
 	}
 
 	// Start the server
